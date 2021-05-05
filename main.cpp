@@ -5,12 +5,14 @@
 #include <utility>
 using namespace std;
 
-#define c 8
+#define d 8
+#define c 3
 struct Circle {
     double x;
     double y;
     string name;
     double r;
+    string color;
 };
 
 struct Line {
@@ -24,6 +26,7 @@ struct Line {
 //Считаем, что double принимается в виде x.xx
 int main() {
 
+    ofstream output("output.txt");
     ifstream input ("table.txt");
     string name;
     //bool ifCircle;
@@ -47,7 +50,7 @@ int main() {
     vector <Circle> circles;
 
     int j = 0;
-    while (j < c) {
+    while (j < d) {
        if (input.is_open()) {
            x1 = 0;
            x2 = 0;
@@ -145,6 +148,7 @@ int main() {
            cir.r = x2;
            cir.y = y1;
            cir.name = name;
+           cir.color = y2_string;
 
            circles.push_back(cir);
 
@@ -152,13 +156,23 @@ int main() {
 
    }
 
-   for (auto el : lines) {
-       cout << el.name << " x1: " << el.x1 << " y1: " << el.y1 << " x2: " << el.x2 << " y2: " << el.y2 << endl;
+    output << "\\begin{center}\n\t\\begin{tikzpicture}[scale=0.2]" << endl;
+
+
+
+    for (auto el : lines) {
+        double alpha = atan((el.y2 - el.y1) / (el.x2 - el.x1));
+        output << "\t\t\\draw [black] (" << el.x1 << "," << el.y1 << ") -- (" << el.x2 << "," << el.y2 << ");" << endl;
+        output << "\t\t\\draw (" << (el.x2 + el.x1)/2 << "," << (el.y2 + el.y1)/2 << ") node [below] {$" << el.name << "$};" << endl;
+        output << "\t\t\\fill [black] (" << el.x2 << "," << el.y2 << ") -- (" << el.x2 + c * cos(0.52 + alpha) << "," << el.y2 - c * cos(0.52 + alpha) << ") -- (" << el.x2 - c * cos(alpha - 0.52) << "," << el.y2 + c * cos(alpha - 0.52) << ");" << endl;
    }
 
     for (auto el : circles) {
-        cout << el.name << " x: " << el.x << " y: " << el.y << " r: " << el.r << endl;
+        output << "\t\t\\draw[" << el.color <<"](" << el.x << ", " << el.y << ") circle(" << el.r << ");\n";
+        output << "\t\t\\draw(" << el.x << ", " << el.y << ") node {$" << el.name << "$};" << endl;
     }
+
+    output << "\t\\end{tikzpicture}" << endl << "\\end{center}" << endl;
 
 
 
