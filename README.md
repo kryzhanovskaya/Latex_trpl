@@ -1,1 +1,1 @@
-# Lera_Dasha
+LaTex part of TRPL app
